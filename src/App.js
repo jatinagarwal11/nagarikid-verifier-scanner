@@ -49,7 +49,7 @@ function App() {
               <p>Name: {result.name}</p>
               <p>DOB: {result.dob}</p>
               <p>National ID: {result.national_id}</p>
-              <img src={result.photo_url} alt="Verified person's photo" />
+              <img src={result.photo_url} alt="Portrait of verified person" />
             </>
           ) : (
             <h2>Verification Failed</h2>
