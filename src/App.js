@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import './App.css';
 
@@ -6,19 +6,7 @@ function App() {
   const [result, setResult] = useState(null);
   const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
-  useEffect(() => {
-    const scanner = new Html5QrcodeScanner('reader', {
-      qrbox: {
-        width: 250,
-        height: 250,
-      },
-      fps: 5,
-    });
-    scanner.render(onScanSuccess, onScanFailure);
-    return () => scanner.clear();
-  }, []);
-
-  const onScanSuccess = async (decodedText) => {
+  const onScanSuccess = useCallback(async (decodedText) => {
     try {
       const data = JSON.parse(decodedText);
       const res = await fetch(`${API_BASE}/verify`, {
@@ -31,11 +19,23 @@ function App() {
     } catch (err) {
       setResult({ verified: false, error: 'Invalid QR' });
     }
-  };
+  }, [API_BASE]);
 
-  const onScanFailure = (error) => {
+  const onScanFailure = useCallback((error) => {
     console.warn(`Code scan error = ${error}`);
-  };
+  }, []);
+
+  useEffect(() => {
+    const scanner = new Html5QrcodeScanner('reader', {
+      qrbox: {
+        width: 250,
+        height: 250,
+      },
+      fps: 5,
+    });
+    scanner.render(onScanSuccess, onScanFailure);
+    return () => scanner.clear();
+  }, [onScanSuccess, onScanFailure]);
 
   return (
     <div className="scanner">
@@ -49,7 +49,7 @@ function App() {
               <p>Name: {result.name}</p>
               <p>DOB: {result.dob}</p>
               <p>National ID: {result.national_id}</p>
-              <img src={result.photo_url} alt="Photo" />
+              <img src={result.photo_url} alt="Verified person's photo" />
             </>
           ) : (
             <h2>Verification Failed</h2>
