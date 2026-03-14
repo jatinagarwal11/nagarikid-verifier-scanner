@@ -1,0 +1,20 @@
+.scanner {
+  text-align: center;
+  padding: 20px;
+}
+
+#reader {
+  width: 300px;
+  margin: 0 auto;
+}
+
+.result {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.result img {
+  width: 100px;
+  height: 100px;
+}
